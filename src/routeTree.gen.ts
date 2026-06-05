@@ -16,6 +16,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppMessagesRouteImport } from './routes/_app.messages'
 import { Route as AppMatchesRouteImport } from './routes/_app.matches'
 import { Route as AppDiscoverRouteImport } from './routes/_app.discover'
+import { Route as AppChatMatchIdRouteImport } from './routes/_app.chat.$matchId'
 
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
@@ -51,6 +52,11 @@ const AppDiscoverRoute = AppDiscoverRouteImport.update({
   path: '/discover',
   getParentRoute: () => AppRoute,
 } as any)
+const AppChatMatchIdRoute = AppChatMatchIdRouteImport.update({
+  id: '/chat/$matchId',
+  path: '/chat/$matchId',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/discover': typeof AppDiscoverRoute
   '/matches': typeof AppMatchesRoute
   '/messages': typeof AppMessagesRoute
+  '/chat/$matchId': typeof AppChatMatchIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/discover': typeof AppDiscoverRoute
   '/matches': typeof AppMatchesRoute
   '/messages': typeof AppMessagesRoute
+  '/chat/$matchId': typeof AppChatMatchIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/_app/discover': typeof AppDiscoverRoute
   '/_app/matches': typeof AppMatchesRoute
   '/_app/messages': typeof AppMessagesRoute
+  '/_app/chat/$matchId': typeof AppChatMatchIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -87,8 +96,16 @@ export interface FileRouteTypes {
     | '/discover'
     | '/matches'
     | '/messages'
+    | '/chat/$matchId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/onboarding' | '/discover' | '/matches' | '/messages'
+  to:
+    | '/'
+    | '/auth'
+    | '/onboarding'
+    | '/discover'
+    | '/matches'
+    | '/messages'
+    | '/chat/$matchId'
   id:
     | '__root__'
     | '/'
@@ -98,6 +115,7 @@ export interface FileRouteTypes {
     | '/_app/discover'
     | '/_app/matches'
     | '/_app/messages'
+    | '/_app/chat/$matchId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -158,6 +176,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDiscoverRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/chat/$matchId': {
+      id: '/_app/chat/$matchId'
+      path: '/chat/$matchId'
+      fullPath: '/chat/$matchId'
+      preLoaderRoute: typeof AppChatMatchIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
@@ -165,12 +190,14 @@ interface AppRouteChildren {
   AppDiscoverRoute: typeof AppDiscoverRoute
   AppMatchesRoute: typeof AppMatchesRoute
   AppMessagesRoute: typeof AppMessagesRoute
+  AppChatMatchIdRoute: typeof AppChatMatchIdRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppDiscoverRoute: AppDiscoverRoute,
   AppMatchesRoute: AppMatchesRoute,
   AppMessagesRoute: AppMessagesRoute,
+  AppChatMatchIdRoute: AppChatMatchIdRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
