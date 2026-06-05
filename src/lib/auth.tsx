@@ -46,7 +46,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .select("*")
       .eq("user_id", uid)
       .maybeSingle();
-    setProfile((data as ProfileRow) ?? null);
+    setProfile((data as ProfileRow | null) ?? null);
     setProfileLoaded(true);
   }, []);
 

@@ -20,7 +20,7 @@ export async function getOwnSignedUrls(paths: string[]): Promise<string[]> {
     .from(PHOTO_BUCKET)
     .createSignedUrls(paths, 600);
   if (error) throw error;
-  return (data ?? []).map((d) => d.signedUrl).filter(Boolean);
+  return (data ?? []).map((d) => d.signedUrl).filter((u): u is string => !!u);
 }
 
 /** Upload a photo to my own folder: "<uid>/<filename>". Returns the storage path. */
