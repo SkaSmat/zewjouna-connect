@@ -22,14 +22,29 @@ export function SwipeCard({ candidate, onDecision, isTop }: SwipeCardProps) {
   useEffect(() => {
     let active = true;
     setLoadingPhotos(true);
+
+    if (!candidate.photos?.length) {
+      setUrls([]);
+      setPhotoIdx(0);
+      setLoadingPhotos(false);
+      return () => {
+        active = false;
+      };
+    }
+
     getSignedPhotoUrls(candidate.user_id)
       .then((u) => active && setUrls(u))
       .catch(() => active && setUrls([]))
-      .finally(() => active && setLoadingPhotos(false));
+      .finally(() => {
+        if (active) {
+          setPhotoIdx(0);
+          setLoadingPhotos(false);
+        }
+      });
     return () => {
       active = false;
     };
-  }, [candidate.user_id]);
+  }, [candidate.user_id, candidate.photos]);
 
   const onPointerDown = (e: React.PointerEvent) => {
     if (!isTop) return;
