@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Heart, Loader2, Mail } from "lucide-react";
+import { Loader2, Mail } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/auth")({
@@ -65,10 +65,7 @@ function AuthPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <div className="gradient-brand px-6 pb-12 pt-16 text-center text-primary-foreground">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-white/15 backdrop-blur">
-          <Heart className="h-8 w-8" fill="currentColor" />
-        </div>
-        <h1 className="mt-4 text-3xl font-extrabold tracking-tight">ZEWJOUNA</h1>
+        <h1 className="text-3xl font-extrabold tracking-tight">ZEWJOUNA</h1>
         <p className="mt-1 text-sm text-primary-foreground/85">
           Rencontres de la diaspora algérienne
         </p>
