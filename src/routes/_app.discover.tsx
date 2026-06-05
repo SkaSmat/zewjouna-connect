@@ -3,12 +3,22 @@ import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import type { CandidateRow } from "@/lib/database.types";
-import { ageFromBirthdate } from "@/lib/constants";
+import { ageFromBirthdate, COUNTRIES, type Country } from "@/lib/constants";
 import { SwipeCard } from "@/components/swipe-card";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Heart, X, Loader2, RefreshCw, Flame, SlidersHorizontal, MapPin } from "lucide-react";
+import {
+  Heart,
+  X,
+  Loader2,
+  RefreshCw,
+  Flame,
+  SlidersHorizontal,
+  MapPin,
+  Globe,
+  Check,
+} from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/discover")({
@@ -24,6 +34,8 @@ function Discover() {
   const [stack, setStack] = useState<CandidateRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [maxDistanceKm, setMaxDistanceKm] = useState<number | null>(null);
+  // null = explore around my real location. A country = "passport" mode.
+  const [country, setCountry] = useState<Country | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -35,6 +47,7 @@ function Discover() {
         p_max_age: myAge + 12,
         p_limit: 20,
         ...(maxDistanceKm != null ? { p_max_distance_km: maxDistanceKm } : {}),
+        ...(country ? { p_center_lng: country.lng, p_center_lat: country.lat } : {}),
       });
       if (error) throw error;
       setStack(((data as CandidateRow[]) ?? []).filter((c) => c.user_id !== user?.id));
@@ -43,7 +56,7 @@ function Discover() {
     } finally {
       setLoading(false);
     }
-  }, [profile?.birthdate, user?.id, maxDistanceKm]);
+  }, [profile?.birthdate, user?.id, maxDistanceKm, country]);
 
   useEffect(() => {
     load();
@@ -84,6 +97,54 @@ function Discover() {
           <Flame className="h-5 w-5 text-primary" fill="currentColor" /> Découvrir
         </h1>
         <div className="flex items-center gap-1">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative rounded-full"
+                aria-label="Choisir un pays"
+              >
+                {country ? (
+                  <span className="text-lg leading-none">{country.flag}</span>
+                ) : (
+                  <Globe className="h-5 w-5" />
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="end" className="w-64 rounded-2xl p-2">
+              <p className="px-2 pb-1.5 pt-1 text-xs font-semibold text-muted-foreground">
+                Explorer un pays
+              </p>
+              <div className="max-h-72 overflow-y-auto">
+                <button
+                  onClick={() => setCountry(null)}
+                  className={`flex w-full items-center justify-between rounded-xl px-2.5 py-2 text-sm transition-colors hover:bg-muted ${
+                    country == null ? "font-semibold" : ""
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4 text-primary" /> Autour de moi
+                  </span>
+                  {country == null && <Check className="h-4 w-4 text-primary" />}
+                </button>
+                {COUNTRIES.map((c) => (
+                  <button
+                    key={c.code}
+                    onClick={() => setCountry(c)}
+                    className={`flex w-full items-center justify-between rounded-xl px-2.5 py-2 text-sm transition-colors hover:bg-muted ${
+                      country?.code === c.code ? "font-semibold" : ""
+                    }`}
+                  >
+                    <span className="flex items-center gap-2">
+                      <span className="text-base leading-none">{c.flag}</span> {c.label}
+                    </span>
+                    {country?.code === c.code && <Check className="h-4 w-4 text-primary" />}
+                  </button>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -137,6 +198,20 @@ function Discover() {
           </Button>
         </div>
       </header>
+
+      {country && (
+        <div className="mx-4 mb-1 flex items-center justify-between rounded-full bg-accent px-4 py-2 text-sm">
+          <span className="flex items-center gap-1.5 font-medium text-accent-foreground">
+            <Globe className="h-4 w-4 text-primary" /> Vous explorez {country.flag} {country.label}
+          </span>
+          <button
+            onClick={() => setCountry(null)}
+            className="font-semibold text-primary transition-opacity hover:opacity-70"
+          >
+            Revenir
+          </button>
+        </div>
+      )}
 
       <div className="relative mx-4 flex-1">
         {loading ? (
