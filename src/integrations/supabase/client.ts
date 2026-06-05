@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import type { Database } from "./types";
+import type { Database } from "@/lib/database.types";
 
 // Existing ZEWJOUNA Supabase backend (consumed read-only — do not modify schema).
 // The publishable (anon) key is safe to ship in the browser; RLS protects all data.
