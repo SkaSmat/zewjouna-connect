@@ -6,17 +6,24 @@ import type { CandidateRow } from "@/lib/database.types";
 import { ageFromBirthdate } from "@/lib/constants";
 import { SwipeCard } from "@/components/swipe-card";
 import { Button } from "@/components/ui/button";
-import { Heart, X, Loader2, RefreshCw, Flame } from "lucide-react";
+import { Slider } from "@/components/ui/slider";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Heart, X, Loader2, RefreshCw, Flame, SlidersHorizontal, MapPin } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/discover")({
   component: Discover,
 });
 
+// null = adaptive radius (auto, cold-start friendly). A number = hard cap in km.
+const MIN_KM = 5;
+const MAX_KM = 200;
+
 function Discover() {
   const { user, profile } = useAuth();
   const [stack, setStack] = useState<CandidateRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [maxDistanceKm, setMaxDistanceKm] = useState<number | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -27,6 +34,7 @@ function Discover() {
         p_min_age: Math.max(18, myAge - 10),
         p_max_age: myAge + 12,
         p_limit: 20,
+        ...(maxDistanceKm != null ? { p_max_distance_km: maxDistanceKm } : {}),
       });
       if (error) throw error;
       setStack(((data as CandidateRow[]) ?? []).filter((c) => c.user_id !== user?.id));
@@ -35,7 +43,7 @@ function Discover() {
     } finally {
       setLoading(false);
     }
-  }, [profile?.birthdate, user?.id]);
+  }, [profile?.birthdate, user?.id, maxDistanceKm]);
 
   useEffect(() => {
     load();
@@ -75,9 +83,59 @@ function Discover() {
         <h1 className="flex items-center gap-2 text-xl font-extrabold tracking-tight">
           <Flame className="h-5 w-5 text-primary" fill="currentColor" /> Découvrir
         </h1>
-        <Button variant="ghost" size="icon" className="rounded-full" onClick={load}>
-          <RefreshCw className="h-5 w-5" />
-        </Button>
+        <div className="flex items-center gap-1">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative rounded-full"
+                aria-label="Filtres de distance"
+              >
+                <SlidersHorizontal className="h-5 w-5" />
+                {maxDistanceKm != null && (
+                  <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-primary" />
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="end" className="w-72 rounded-2xl">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <p className="flex items-center gap-1.5 text-sm font-semibold">
+                    <MapPin className="h-4 w-4 text-primary" /> Distance maximale
+                  </p>
+                  <span className="text-sm font-medium text-muted-foreground">
+                    {maxDistanceKm == null ? "Illimitée" : `${maxDistanceKm} km`}
+                  </span>
+                </div>
+                <Slider
+                  value={[maxDistanceKm ?? MAX_KM]}
+                  min={MIN_KM}
+                  max={MAX_KM}
+                  step={5}
+                  onValueChange={([v]) => setMaxDistanceKm(v >= MAX_KM ? null : v)}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Au maximum (200 km), la distance est illimitée et on élargit automatiquement la
+                  zone si besoin.
+                </p>
+                {maxDistanceKm != null && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full rounded-full"
+                    onClick={() => setMaxDistanceKm(null)}
+                  >
+                    Réinitialiser
+                  </Button>
+                )}
+              </div>
+            </PopoverContent>
+          </Popover>
+          <Button variant="ghost" size="icon" className="rounded-full" onClick={load}>
+            <RefreshCw className="h-5 w-5" />
+          </Button>
+        </div>
       </header>
 
       <div className="relative mx-4 flex-1">
