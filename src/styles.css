@@ -58,10 +58,10 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.22 0.03 165);
 
-  /* Emerald green — Algerian flag */
-  --primary: oklch(0.56 0.13 162);
+  /* Emerald green — Algerian flag (softened) */
+  --primary: oklch(0.56 0.095 162);
   --primary-foreground: oklch(0.99 0.01 150);
-  --primary-glow: oklch(0.68 0.14 162);
+  --primary-glow: oklch(0.66 0.105 162);
 
   --secondary: oklch(0.96 0.02 160);
   --secondary-foreground: oklch(0.3 0.05 165);
