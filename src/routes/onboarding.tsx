@@ -16,16 +16,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Progress } from "@/components/ui/progress";
 import { TagSelector } from "@/components/tag-selector";
 import { Splash } from "@/routes/index";
 import {
   ArrowLeft,
   ArrowRight,
   Camera,
+  Check,
   Loader2,
   MapPin,
   Plus,
+  Sparkles,
   X,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -36,6 +37,9 @@ export const Route = createFileRoute("/onboarding")({
 });
 
 const TOTAL = 6;
+
+// Per-step copy shown as a friendly icon/emoji hero (Bumble/Badoo style).
+const STEP_EMOJI = ["👋", "🎂", "💚", "✨", "📸", "🌍"] as const;
 
 function Onboarding() {
   const { user, loading, profile, refreshProfile } = useAuth();
@@ -161,9 +165,7 @@ function Onboarding() {
       };
       if (coords) payload.location = toWkt(coords.lng, coords.lat);
 
-      const { error } = await supabase
-        .from("profiles")
-        .upsert(payload, { onConflict: "user_id" });
+      const { error } = await supabase.from("profiles").upsert(payload, { onConflict: "user_id" });
       if (error) throw error;
       await refreshProfile();
       toast.success("Profil créé ! Bienvenue sur ZEWJOUNA 🌿");
@@ -187,55 +189,85 @@ function Onboarding() {
     <div className="flex min-h-screen flex-col bg-background">
       <header className="flex items-center gap-3 px-5 pt-6">
         {step > 0 ? (
-          <button onClick={back} className="rounded-full p-1 text-muted-foreground">
+          <button
+            onClick={back}
+            className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-muted active:scale-90"
+            aria-label="Retour"
+          >
             <ArrowLeft className="h-5 w-5" />
           </button>
         ) : (
-          <span className="w-7" />
+          <span className="w-8" />
         )}
-        <Progress value={((step + 1) / TOTAL) * 100} className="h-2 flex-1" />
-        <span className="w-7 text-right text-xs font-medium text-muted-foreground">
+        {/* Segmented progress, Bumble-style. */}
+        <div className="flex flex-1 gap-1.5">
+          {Array.from({ length: TOTAL }).map((_, i) => (
+            <span
+              key={i}
+              className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
+                i <= step ? "gradient-brand" : "bg-muted"
+              }`}
+            />
+          ))}
+        </div>
+        <span className="w-8 text-right text-xs font-semibold text-muted-foreground">
           {step + 1}/{TOTAL}
         </span>
       </header>
 
-      <main className="mx-auto flex w-full max-w-md flex-1 flex-col px-5 pt-8">
+      <main className="mx-auto flex w-full max-w-md flex-1 flex-col px-5 pt-7">
         {step === 0 && (
-          <Step title="Comment vous appelez-vous ?" subtitle="C'est ce prénom que les autres verront.">
+          <Step
+            emoji={STEP_EMOJI[0]}
+            title="Comment vous appelez-vous ?"
+            subtitle="C'est ce prénom que les autres verront."
+          >
             <Input
               autoFocus
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder="Votre prénom"
               maxLength={40}
-              className="text-lg"
+              className="h-14 rounded-2xl text-lg"
             />
           </Step>
         )}
 
         {step === 1 && (
-          <Step title="Votre date de naissance" subtitle="Vous devez avoir au moins 18 ans.">
+          <Step
+            emoji={STEP_EMOJI[1]}
+            title="Votre date de naissance"
+            subtitle="Vous devez avoir au moins 18 ans."
+          >
             <Input
               type="date"
               value={birthdate}
               onChange={(e) => setBirthdate(e.target.value)}
               max={new Date().toISOString().split("T")[0]}
-              className="text-lg"
+              className="h-14 rounded-2xl text-lg"
             />
             {age != null && (
-              <p className={`mt-2 text-sm ${age >= 18 ? "text-muted-foreground" : "text-destructive"}`}>
-                {age >= 18 ? `${age} ans` : "Vous devez avoir 18 ans ou plus."}
+              <p
+                className={`mt-3 text-sm font-medium ${
+                  age >= 18 ? "text-muted-foreground" : "text-destructive"
+                }`}
+              >
+                {age >= 18 ? `${age} ans 🎉` : "Vous devez avoir 18 ans ou plus."}
               </p>
             )}
           </Step>
         )}
 
         {step === 2 && (
-          <Step title="Vous & vos préférences" subtitle="Pour vous proposer les bons profils.">
-            <div className="space-y-5">
+          <Step
+            emoji={STEP_EMOJI[2]}
+            title="Vous & vos préférences"
+            subtitle="Pour vous proposer les bons profils."
+          >
+            <div className="space-y-6">
               <div>
-                <Label className="mb-2 block">Je suis</Label>
-                <div className="grid grid-cols-3 gap-2">
+                <Label className="mb-2.5 block font-semibold">Je suis</Label>
+                <div className="grid grid-cols-3 gap-2.5">
                   {GENDER_OPTIONS.map((o) => (
                     <ChoiceChip
                       key={o.value}
@@ -248,16 +280,16 @@ function Onboarding() {
                 </div>
               </div>
               <div>
-                <Label className="mb-2 block">Je recherche</Label>
-                <div className="grid grid-cols-2 gap-2">
+                <Label className="mb-2.5 block font-semibold">Je recherche</Label>
+                <div className="space-y-2.5">
                   {LOOKING_FOR_OPTIONS.map((o) => (
-                    <ChoiceChip
+                    <OptionRow
                       key={o.value}
                       active={lookingFor === o.value}
                       onClick={() => setLookingFor(o.value)}
                     >
                       {o.label}
-                    </ChoiceChip>
+                    </OptionRow>
                   ))}
                 </div>
               </div>
@@ -266,40 +298,58 @@ function Onboarding() {
         )}
 
         {step === 3 && (
-          <Step title="Parlez de vous" subtitle="Une bio sincère attire les bonnes personnes.">
+          <Step
+            emoji={STEP_EMOJI[3]}
+            title="Parlez de vous"
+            subtitle="Une bio sincère attire les bonnes personnes."
+          >
             <Textarea
               value={bio}
               onChange={(e) => setBio(e.target.value)}
               placeholder="Ce qui vous fait vibrer, vos origines, ce que vous cherchez…"
               rows={6}
               maxLength={500}
+              className="rounded-2xl text-base"
             />
-            <p className="mt-1 text-right text-xs text-muted-foreground">{bio.length}/500</p>
+            <p className="mt-2 text-right text-xs text-muted-foreground">{bio.length}/500</p>
           </Step>
         )}
 
         {step === 4 && (
-          <Step title="Ajoutez vos photos" subtitle="Au moins une belle photo de vous (jusqu'à 6).">
+          <Step
+            emoji={STEP_EMOJI[4]}
+            title="Ajoutez vos photos"
+            subtitle="Au moins une belle photo de vous (jusqu'à 6)."
+          >
             <div className="grid grid-cols-3 gap-3">
               {photoUrls.map((url, i) => (
-                <div key={i} className="relative aspect-3/4 overflow-hidden rounded-xl">
+                <div
+                  key={i}
+                  className="relative aspect-3/4 overflow-hidden rounded-2xl shadow-soft"
+                >
                   <img src={url} alt="" className="h-full w-full object-cover" />
+                  {i === 0 && (
+                    <span className="absolute bottom-1 left-1 rounded-full bg-primary px-2 py-0.5 text-[10px] font-semibold text-primary-foreground">
+                      Principale
+                    </span>
+                  )}
                   <button
                     onClick={() => removePhoto(i)}
-                    className="absolute right-1 top-1 rounded-full bg-foreground/70 p-1 text-background"
+                    className="absolute right-1 top-1 rounded-full bg-foreground/70 p-1 text-background transition-transform active:scale-90"
+                    aria-label="Retirer la photo"
                   >
                     <X className="h-3.5 w-3.5" />
                   </button>
                 </div>
               ))}
               {photoPaths.length < 6 && (
-                <label className="flex aspect-3/4 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-border bg-muted text-muted-foreground">
+                <label className="flex aspect-3/4 cursor-pointer flex-col items-center justify-center gap-1 rounded-2xl border-2 border-dashed border-border bg-muted text-muted-foreground transition-colors hover:border-primary/50 hover:text-primary">
                   {uploading ? (
                     <Loader2 className="h-5 w-5 animate-spin" />
                   ) : (
                     <Plus className="h-6 w-6" />
                   )}
-                  <span className="text-[10px]">Ajouter</span>
+                  <span className="text-[10px] font-medium">Ajouter</span>
                   <input
                     type="file"
                     accept="image/*"
@@ -310,7 +360,7 @@ function Onboarding() {
                 </label>
               )}
             </div>
-            <p className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
+            <p className="mt-4 flex items-center gap-1.5 text-xs text-muted-foreground">
               <Camera className="h-3.5 w-3.5" /> Vos photos restent privées et sécurisées.
             </p>
           </Step>
@@ -318,29 +368,31 @@ function Onboarding() {
 
         {step === 5 && (
           <Step
+            emoji={STEP_EMOJI[5]}
             title="Votre communauté"
             subtitle="Le cœur de ZEWJOUNA : ce qui vous rapproche des autres."
           >
             <div className="space-y-6">
               <div>
-                <Label className="mb-2 block">Région d'origine</Label>
+                <Label className="mb-2.5 block font-semibold">Région d'origine</Label>
                 <TagSelector options={REGIONS} selected={regions} onChange={setRegions} />
               </div>
               <div>
-                <Label className="mb-2 block">Ville actuelle</Label>
+                <Label className="mb-2.5 block font-semibold">Ville actuelle</Label>
                 <Input
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                   placeholder="Paris, Montréal, Alger…"
                   maxLength={60}
+                  className="h-12 rounded-2xl"
                 />
               </div>
               <div>
-                <Label className="mb-2 block">Langues</Label>
+                <Label className="mb-2.5 block font-semibold">Langues</Label>
                 <TagSelector options={LANGUAGES} selected={languages} onChange={setLanguages} />
               </div>
               <div>
-                <Label className="mb-2 block">Centres d'intérêt</Label>
+                <Label className="mb-2.5 block font-semibold">Centres d'intérêt</Label>
                 <TagSelector
                   options={INTERESTS}
                   selected={interests}
@@ -348,24 +400,34 @@ function Onboarding() {
                   max={8}
                 />
               </div>
-              <div className="rounded-2xl border border-border bg-card p-4">
+              <div
+                className={`rounded-2xl border p-4 transition-colors ${
+                  coords ? "border-primary/40 bg-accent" : "border-border bg-card"
+                }`}
+              >
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <p className="text-sm font-semibold">Localisation</p>
-                    <p className="text-xs text-muted-foreground">
-                      {coords ? "Position activée ✓" : "Pour calculer les distances."}
+                    <p className="flex items-center gap-1.5 text-sm font-semibold">
+                      <MapPin className="h-4 w-4 text-primary" /> Localisation
+                    </p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                      {coords
+                        ? "Position activée — on vous montrera les profils près de vous ✓"
+                        : "Pour voir les personnes proches de vous."}
                     </p>
                   </div>
                   <Button
                     type="button"
                     variant={coords ? "secondary" : "outline"}
                     size="sm"
-                    className="rounded-full"
+                    className="shrink-0 rounded-full"
                     onClick={requestGeo}
                     disabled={geoBusy}
                   >
                     {geoBusy ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : coords ? (
+                      <Check className="h-4 w-4" />
                     ) : (
                       <MapPin className="h-4 w-4" />
                     )}
@@ -378,17 +440,19 @@ function Onboarding() {
         )}
       </main>
 
-      <footer className="sticky bottom-0 mx-auto w-full max-w-md bg-gradient-to-t from-background to-transparent px-5 pb-6 pt-4">
+      <footer className="sticky bottom-0 mx-auto w-full max-w-md bg-gradient-to-t from-background via-background to-transparent px-5 pb-7 pt-5">
         <Button
           size="lg"
-          className="w-full rounded-full"
+          className="h-14 w-full rounded-full text-base font-semibold shadow-soft"
           disabled={!canNext || saving}
           onClick={next}
         >
           {saving ? (
             <Loader2 className="h-4 w-4 animate-spin" />
           ) : step === TOTAL - 1 ? (
-            "Terminer"
+            <>
+              <Sparkles className="h-4 w-4" /> Terminer
+            </>
           ) : (
             <>
               Continuer <ArrowRight className="h-4 w-4" />
@@ -401,18 +465,25 @@ function Onboarding() {
 }
 
 function Step({
+  emoji,
   title,
   subtitle,
   children,
 }: {
+  emoji?: string;
   title: string;
   subtitle?: string;
   children: React.ReactNode;
 }) {
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-      <h1 className="text-2xl font-extrabold tracking-tight">{title}</h1>
-      {subtitle && <p className="mt-1.5 text-sm text-muted-foreground">{subtitle}</p>}
+    <div className="animate-in fade-in slide-in-from-bottom-3 duration-300">
+      {emoji && (
+        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-accent text-3xl shadow-soft">
+          {emoji}
+        </div>
+      )}
+      <h1 className="text-[1.7rem] font-extrabold leading-tight tracking-tight">{title}</h1>
+      {subtitle && <p className="mt-2 text-sm text-muted-foreground">{subtitle}</p>}
       <div className="mt-7">{children}</div>
     </div>
   );
@@ -431,13 +502,44 @@ function ChoiceChip({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-2xl border px-3 py-3 text-sm font-medium transition-all active:scale-95 ${
+      className={`rounded-2xl border px-3 py-3.5 text-sm font-medium transition-all active:scale-95 ${
         active
           ? "border-primary bg-primary text-primary-foreground shadow-soft"
           : "border-border bg-card hover:border-primary/40"
       }`}
     >
       {children}
+    </button>
+  );
+}
+
+function OptionRow({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex w-full items-center justify-between rounded-2xl border px-4 py-3.5 text-left text-sm font-medium transition-all active:scale-[0.98] ${
+        active
+          ? "border-primary bg-accent text-accent-foreground shadow-soft"
+          : "border-border bg-card hover:border-primary/40"
+      }`}
+    >
+      {children}
+      <span
+        className={`flex h-5 w-5 items-center justify-center rounded-full border transition-colors ${
+          active ? "border-primary bg-primary text-primary-foreground" : "border-border"
+        }`}
+      >
+        {active && <Check className="h-3.5 w-3.5" strokeWidth={3} />}
+      </span>
     </button>
   );
 }
