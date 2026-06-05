@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Heart, Loader2, Mail } from "lucide-react";
+import { Loader2, Mail } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/auth")({
