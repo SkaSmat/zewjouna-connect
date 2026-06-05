@@ -85,12 +85,12 @@ export interface MatchProfileRow {
 export type Database = {
   public: {
     Tables: {
-      profiles: { Row: ProfileRow; Insert: Partial<ProfileRow>; Update: Partial<ProfileRow> };
-      swipes: { Row: SwipeRow; Insert: Partial<SwipeRow>; Update: Partial<SwipeRow> };
-      matches: { Row: MatchRow; Insert: Partial<MatchRow>; Update: Partial<MatchRow> };
-      messages: { Row: MessageRow; Insert: Partial<MessageRow>; Update: Partial<MessageRow> };
-      blocks: { Row: BlockRow; Insert: Partial<BlockRow>; Update: Partial<BlockRow> };
-      reports: { Row: ReportRow; Insert: Partial<ReportRow>; Update: Partial<ReportRow> };
+      profiles: { Row: ProfileRow; Insert: Partial<ProfileRow>; Update: Partial<ProfileRow>; Relationships: [] };
+      swipes: { Row: SwipeRow; Insert: Partial<SwipeRow>; Update: Partial<SwipeRow>; Relationships: [] };
+      matches: { Row: MatchRow; Insert: Partial<MatchRow>; Update: Partial<MatchRow>; Relationships: [] };
+      messages: { Row: MessageRow; Insert: Partial<MessageRow>; Update: Partial<MessageRow>; Relationships: [] };
+      blocks: { Row: BlockRow; Insert: Partial<BlockRow>; Update: Partial<BlockRow>; Relationships: [] };
+      reports: { Row: ReportRow; Insert: Partial<ReportRow>; Update: Partial<ReportRow>; Relationships: [] };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
