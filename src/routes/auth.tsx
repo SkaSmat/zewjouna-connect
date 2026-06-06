@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -19,6 +19,7 @@ function AuthPage() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [accepted, setAccepted] = useState(false);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -27,6 +28,10 @@ function AuthPage() {
 
   const handleEmail = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (mode === "signup" && !accepted) {
+      toast.error("Vous devez confirmer avoir 18 ans et accepter les conditions.");
+      return;
+    }
     setBusy(true);
     try {
       if (mode === "signup") {
@@ -49,6 +54,10 @@ function AuthPage() {
   };
 
   const handleGoogle = async () => {
+    if (mode === "signup" && !accepted) {
+      toast.error("Vous devez confirmer avoir 18 ans et accepter les conditions.");
+      return;
+    }
     setBusy(true);
     try {
       const { error } = await supabase.auth.signInWithOAuth({
@@ -78,9 +87,7 @@ function AuthPage() {
               key={m}
               onClick={() => setMode(m)}
               className={`flex-1 rounded-full py-2 text-sm font-semibold transition-colors ${
-                mode === m
-                  ? "bg-card text-foreground shadow-soft"
-                  : "text-muted-foreground"
+                mode === m ? "bg-card text-foreground shadow-soft" : "text-muted-foreground"
               }`}
             >
               {m === "signin" ? "Connexion" : "Inscription"}
@@ -114,7 +121,43 @@ function AuthPage() {
               placeholder="••••••••"
             />
           </div>
-          <Button type="submit" className="w-full rounded-full" size="lg" disabled={busy}>
+          {mode === "signup" && (
+            <label className="flex items-start gap-2.5 text-xs text-muted-foreground">
+              <input
+                type="checkbox"
+                checked={accepted}
+                onChange={(e) => setAccepted(e.target.checked)}
+                className="mt-0.5 h-4 w-4 shrink-0 rounded border-border accent-primary"
+              />
+              <span>
+                Je certifie avoir <strong className="text-foreground">18 ans ou plus</strong> et
+                j'accepte les{" "}
+                <Link
+                  to="/legal"
+                  search={{ doc: "cgu" }}
+                  className="font-medium text-primary underline"
+                >
+                  conditions d'utilisation
+                </Link>{" "}
+                et la{" "}
+                <Link
+                  to="/legal"
+                  search={{ doc: "confidentialite" }}
+                  className="font-medium text-primary underline"
+                >
+                  politique de confidentialité
+                </Link>
+                .
+              </span>
+            </label>
+          )}
+
+          <Button
+            type="submit"
+            className="w-full rounded-full"
+            size="lg"
+            disabled={busy || (mode === "signup" && !accepted)}
+          >
             {busy ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
@@ -138,15 +181,24 @@ function AuthPage() {
           size="lg"
           className="w-full rounded-full"
           onClick={handleGoogle}
-          disabled={busy}
+          disabled={busy || (mode === "signup" && !accepted)}
         >
           <GoogleIcon />
           Continuer avec Google
         </Button>
 
         <p className="mt-6 text-center text-xs text-muted-foreground">
-          En continuant, vous acceptez nos conditions d'utilisation et notre politique de
-          confidentialité.
+          <Link to="/legal" search={{ doc: "cgu" }} className="underline">
+            Conditions d'utilisation
+          </Link>
+          {" · "}
+          <Link to="/legal" search={{ doc: "confidentialite" }} className="underline">
+            Confidentialité
+          </Link>
+          {" · "}
+          <Link to="/legal" search={{ doc: "mentions" }} className="underline">
+            Mentions légales
+          </Link>
         </p>
       </div>
     </div>
