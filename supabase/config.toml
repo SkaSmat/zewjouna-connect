@@ -8,6 +8,15 @@ major_version = 15
 [auth]
 # Email/password onboarding. Add OAuth providers here when needed.
 enable_signup = true
+# Minimum password length (mirror this in Dashboard → Authentication → Policies).
+minimum_password_length = 8
+
+[auth.email]
+# Require users to confirm their e-mail before first sign-in. Strongly
+# recommended for a public beta to cut down on fake/abusive accounts.
+# NOTE: for the hosted project this must ALSO be enabled in
+# Dashboard → Authentication → Providers → Email ("Confirm email").
+enable_confirmations = true
 
 [storage]
 enabled = true

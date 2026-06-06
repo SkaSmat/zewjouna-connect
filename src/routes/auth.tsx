@@ -114,12 +114,15 @@ function AuthPage() {
               id="password"
               type="password"
               required
-              minLength={6}
+              minLength={mode === "signup" ? 8 : 6}
               autoComplete={mode === "signup" ? "new-password" : "current-password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
             />
+            {mode === "signup" && (
+              <p className="text-xs text-muted-foreground">Au moins 8 caractères.</p>
+            )}
           </div>
           {mode === "signup" && (
             <label className="flex items-start gap-2.5 text-xs text-muted-foreground">
