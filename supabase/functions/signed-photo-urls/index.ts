@@ -61,6 +61,16 @@ Deno.serve(async (req) => {
   // Service-role client: bypasses RLS for the block check + photo lookup.
   const admin = createClient(SUPABASE_URL, SERVICE_KEY);
 
+  // Anti-scraping: cap how fast a user can mint signed URLs (60 / minute).
+  const { data: allowed } = await admin.rpc("rl_take", {
+    p_key: `photos:${user.id}`,
+    p_limit: 60,
+    p_window_seconds: 60,
+  });
+  if (allowed === false) {
+    return json({ error: "Trop de requêtes, réessayez dans un instant." }, 429);
+  }
+
   // Own photos: nothing to authorize.
   if (targetId !== user.id) {
     const { data: blocked } = await admin
