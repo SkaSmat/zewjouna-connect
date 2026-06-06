@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import type { MatchRow, MatchProfileRow, MessageRow } from "@/lib/database.types";
 import { getSignedPhotoUrls } from "@/lib/photos";
+import { notify } from "@/lib/notify";
 import { SafetyMenu } from "@/components/safety-menu";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -122,6 +123,7 @@ function Chat() {
         .insert({ match_id: matchId, sender_id: user.id, content });
       if (error) throw error;
       setText("");
+      notify("message", matchId);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Message non envoyé";
       toast.error(

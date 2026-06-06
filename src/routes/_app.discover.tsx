@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import type { CandidateRow } from "@/lib/database.types";
 import { ageFromBirthdate, COUNTRIES, type Country } from "@/lib/constants";
+import { notify } from "@/lib/notify";
 import { SwipeCard } from "@/components/swipe-card";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -79,7 +80,10 @@ function Discover() {
             .or(`user_a.eq.${candidate.user_id},user_b.eq.${candidate.user_id}`)
             .limit(1)
             .maybeSingle();
-          if (m) toast.success(`C'est un match avec ${candidate.display_name} ! 💚`);
+          if (m) {
+            toast.success(`C'est un match avec ${candidate.display_name} ! 💚`);
+            notify("match", m.id);
+          }
         }
       } catch (err) {
         toast.error(err instanceof Error ? err.message : "Action impossible");
