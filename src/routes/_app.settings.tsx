@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -8,6 +8,7 @@ import {
   Download,
   Trash2,
   ShieldOff,
+  ShieldAlert,
   Loader2,
   ArrowLeft,
 } from "lucide-react";
@@ -29,6 +30,11 @@ function SettingsPage() {
   const [exporting, setExporting] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [confirm, setConfirm] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    supabase.rpc("current_user_is_admin").then(({ data }) => setIsAdmin(data === true));
+  }, [user?.id]);
 
   const loadBlocks = useCallback(async () => {
     if (!user) return;
@@ -128,6 +134,15 @@ function SettingsPage() {
       </header>
 
       <div className="space-y-8 px-5">
+        {isAdmin && (
+          <Link
+            to="/admin"
+            className="flex items-center gap-2 rounded-2xl border border-primary/30 bg-primary/5 px-4 py-3 text-sm font-semibold text-primary"
+          >
+            <ShieldAlert className="h-4 w-4" /> Espace modération
+          </Link>
+        )}
+
         {/* Data export */}
         <section className="space-y-2">
           <h2 className="text-sm font-bold">Mes données</h2>

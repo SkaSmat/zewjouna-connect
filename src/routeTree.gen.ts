@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppSettingsRouteImport } from './routes/_app.settings'
+import { Route as AppAdminRouteImport } from './routes/_app.admin'
 import { Route as AppProfileRouteImport } from './routes/_app.profile'
 import { Route as AppMessagesRouteImport } from './routes/_app.messages'
 import { Route as AppMatchesRouteImport } from './routes/_app.matches'
@@ -48,6 +49,11 @@ const IndexRoute = IndexRouteImport.update({
 const AppSettingsRoute = AppSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAdminRoute = AppAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => AppRoute,
 } as any)
 const AppProfileRoute = AppProfileRouteImport.update({
@@ -86,6 +92,7 @@ export interface FileRoutesByFullPath {
   '/messages': typeof AppMessagesRoute
   '/profile': typeof AppProfileRoute
   '/settings': typeof AppSettingsRoute
+  '/admin': typeof AppAdminRoute
   '/chat/$matchId': typeof AppChatMatchIdRoute
 }
 export interface FileRoutesByTo {
@@ -98,6 +105,7 @@ export interface FileRoutesByTo {
   '/messages': typeof AppMessagesRoute
   '/profile': typeof AppProfileRoute
   '/settings': typeof AppSettingsRoute
+  '/admin': typeof AppAdminRoute
   '/chat/$matchId': typeof AppChatMatchIdRoute
 }
 export interface FileRoutesById {
@@ -112,6 +120,7 @@ export interface FileRoutesById {
   '/_app/messages': typeof AppMessagesRoute
   '/_app/profile': typeof AppProfileRoute
   '/_app/settings': typeof AppSettingsRoute
+  '/_app/admin': typeof AppAdminRoute
   '/_app/chat/$matchId': typeof AppChatMatchIdRoute
 }
 export interface FileRouteTypes {
@@ -126,6 +135,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/profile'
     | '/settings'
+    | '/admin'
     | '/chat/$matchId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -138,6 +148,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/profile'
     | '/settings'
+    | '/admin'
     | '/chat/$matchId'
   id:
     | '__root__'
@@ -151,6 +162,7 @@ export interface FileRouteTypes {
     | '/_app/messages'
     | '/_app/profile'
     | '/_app/settings'
+    | '/_app/admin'
     | '/_app/chat/$matchId'
   fileRoutesById: FileRoutesById
 }
@@ -213,6 +225,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSettingsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/admin': {
+      id: '/_app/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AppAdminRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/messages': {
       id: '/_app/messages'
       path: '/messages'
@@ -250,6 +269,7 @@ interface AppRouteChildren {
   AppMessagesRoute: typeof AppMessagesRoute
   AppProfileRoute: typeof AppProfileRoute
   AppSettingsRoute: typeof AppSettingsRoute
+  AppAdminRoute: typeof AppAdminRoute
   AppChatMatchIdRoute: typeof AppChatMatchIdRoute
 }
 
@@ -259,6 +279,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppMessagesRoute: AppMessagesRoute,
   AppProfileRoute: AppProfileRoute,
   AppSettingsRoute: AppSettingsRoute,
+  AppAdminRoute: AppAdminRoute,
   AppChatMatchIdRoute: AppChatMatchIdRoute,
 }
 
