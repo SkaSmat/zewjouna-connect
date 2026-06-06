@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { User, LogOut, Loader2, Plus, X, BadgeCheck } from "lucide-react";
+import { User, LogOut, Loader2, Plus, X, BadgeCheck, Settings } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/profile")({
@@ -46,7 +46,9 @@ function ProfilePage() {
       setTags(profile.community_tags ?? []);
       const paths = profile.photos ?? [];
       setPhotoPaths(paths);
-      getOwnSignedUrls(paths).then(setPhotoUrls).catch(() => setPhotoUrls([]));
+      getOwnSignedUrls(paths)
+        .then(setPhotoUrls)
+        .catch(() => setPhotoUrls([]));
     }
   }, [profile]);
 
@@ -111,11 +113,20 @@ function ProfilePage() {
         <h1 className="flex items-center gap-2 text-xl font-extrabold tracking-tight">
           <User className="h-5 w-5 text-primary" /> Mon profil
         </h1>
-        {profile?.verified && (
-          <span className="flex items-center gap-1 rounded-full bg-primary/15 px-2.5 py-1 text-xs font-semibold text-primary">
-            <BadgeCheck className="h-3.5 w-3.5" /> Vérifié
-          </span>
-        )}
+        <div className="flex items-center gap-2">
+          {profile?.verified && (
+            <span className="flex items-center gap-1 rounded-full bg-primary/15 px-2.5 py-1 text-xs font-semibold text-primary">
+              <BadgeCheck className="h-3.5 w-3.5" /> Vérifié
+            </span>
+          )}
+          <Link
+            to="/settings"
+            className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-muted"
+            aria-label="Réglages"
+          >
+            <Settings className="h-5 w-5" />
+          </Link>
+        </div>
       </header>
 
       <div className="space-y-6 px-5">
@@ -135,8 +146,18 @@ function ProfilePage() {
             ))}
             {photoPaths.length < 6 && (
               <label className="flex aspect-3/4 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-border bg-muted text-muted-foreground">
-                {uploading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Plus className="h-6 w-6" />}
-                <input type="file" accept="image/*" multiple className="hidden" onChange={handlePhotoPick} />
+                {uploading ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                  <Plus className="h-6 w-6" />
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={handlePhotoPick}
+                />
               </label>
             )}
           </div>
@@ -144,16 +165,29 @@ function ProfilePage() {
 
         <section className="space-y-1.5">
           <Label htmlFor="name">Prénom</Label>
-          <Input id="name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} maxLength={40} />
+          <Input
+            id="name"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            maxLength={40}
+          />
           <p className="text-xs text-muted-foreground">
             {age != null ? `${age} ans` : ""}
-            {profile?.gender ? ` · ${GENDER_OPTIONS.find((g) => g.value === profile.gender)?.label}` : ""}
+            {profile?.gender
+              ? ` · ${GENDER_OPTIONS.find((g) => g.value === profile.gender)?.label}`
+              : ""}
           </p>
         </section>
 
         <section className="space-y-1.5">
           <Label htmlFor="bio">Bio</Label>
-          <Textarea id="bio" value={bio} onChange={(e) => setBio(e.target.value)} rows={4} maxLength={500} />
+          <Textarea
+            id="bio"
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+            rows={4}
+            maxLength={500}
+          />
         </section>
 
         <section>

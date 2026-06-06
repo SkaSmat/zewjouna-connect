@@ -16,3 +16,8 @@ enabled = true
 # the JWT itself and uses the service-role key to sign private photos.
 [functions.signed-photo-urls]
 verify_jwt = true
+
+# delete-account deletes the caller's own auth.users row (RGPD erasure),
+# cascading to all their data. JWT-gated; uses the service-role key server-side.
+[functions.delete-account]
+verify_jwt = true
