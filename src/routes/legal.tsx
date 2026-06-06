@@ -4,6 +4,9 @@ import { ArrowLeft } from "lucide-react";
 
 type Doc = "confidentialite" | "cgu" | "mentions";
 
+const CONTACT_EMAIL = "skandersmatii@gmail.com";
+const LAST_UPDATED = "6 juin 2026";
+
 export const Route = createFileRoute("/legal")({
   ssr: false,
   validateSearch: (search: Record<string, unknown>): { doc?: Doc } => {
@@ -54,8 +57,8 @@ function Legal() {
 
       <main className="mx-auto w-full max-w-2xl flex-1 px-5 py-6">
         <div className="mb-5 rounded-xl border border-dashed border-border bg-muted/50 p-3 text-xs text-muted-foreground">
-          ⚠️ Modèle de référence à faire valider par un professionnel du droit avant l'ouverture
-          publique. Les mentions entre 〔crochets〕 doivent être complétées.
+          ⚠️ Modèle de référence à faire valider par un professionnel du droit et à compléter avec
+          les informations d'immatriculation de l'éditeur avant l'ouverture publique.
         </div>
         {tab === "confidentialite" && <Privacy />}
         {tab === "cgu" && <Terms />}
@@ -76,12 +79,12 @@ function Prose({ children }: { children: React.ReactNode }) {
 function Privacy() {
   return (
     <Prose>
-      <p className="text-xs">Dernière mise à jour : 〔date〕</p>
+      <p className="text-xs">Dernière mise à jour : {LAST_UPDATED}</p>
       <h2>1. Responsable du traitement</h2>
       <p>
-        ZEWJOUNA (« nous ») exploite cette application de rencontre. Responsable du traitement :
-        〔raison sociale, adresse〕. Contact / délégué à la protection des données (DPO) :
-        〔email〕.
+        ZEWJOUNA (« nous ») exploite cette application de rencontre. L'éditeur est en cours de
+        structuration juridique ; les informations d'immatriculation seront complétées avant
+        l'ouverture publique. Contact / protection des données : {CONTACT_EMAIL}.
       </p>
       <h2>2. Données que nous collectons</h2>
       <ul>
@@ -110,15 +113,16 @@ function Privacy() {
       </p>
       <h2>5. Durée de conservation</h2>
       <p>
-        Vos données sont conservées tant que votre compte est actif. À la suppression du compte,
-        elles sont effacées (suppression en cascade), sauf obligation légale de conservation
-        〔durées à préciser〕.
+        Vos données sont conservées tant que votre compte est actif. Les comptes inactifs depuis 24
+        mois sont supprimés automatiquement. À la suppression du compte, vos données sont effacées
+        (suppression en cascade), à l'exception de certains journaux de sécurité et signalements
+        conservés jusqu'à 12 mois supplémentaires.
       </p>
       <h2>6. Vos droits (RGPD)</h2>
       <p>
         Accès, rectification, effacement, portabilité, opposition, retrait du consentement. Vous
-        pouvez supprimer votre compte depuis les réglages ou nous écrire à 〔email〕. Réclamation
-        possible auprès de la CNIL.
+        pouvez supprimer votre compte depuis les réglages ou nous écrire à {CONTACT_EMAIL}.
+        Réclamation possible auprès de la CNIL.
       </p>
       <h2>7. Sécurité</h2>
       <p>
@@ -132,7 +136,7 @@ function Privacy() {
 function Terms() {
   return (
     <Prose>
-      <p className="text-xs">Dernière mise à jour : 〔date〕</p>
+      <p className="text-xs">Dernière mise à jour : {LAST_UPDATED}</p>
       <h2>1. Objet</h2>
       <p>
         Les présentes conditions régissent l'utilisation de ZEWJOUNA, application de rencontre
@@ -173,7 +177,10 @@ function Terms() {
       <h2>7. Résiliation</h2>
       <p>Vous pouvez supprimer votre compte à tout moment depuis les réglages.</p>
       <h2>8. Droit applicable</h2>
-      <p>Droit 〔applicable〕. Tout litige relève des tribunaux compétents de 〔ville〕.</p>
+      <p>
+        Le droit applicable et les tribunaux compétents seront précisés avant l'ouverture publique,
+        lors de l'immatriculation de l'éditeur. Pour toute question : {CONTACT_EMAIL}.
+      </p>
     </Prose>
   );
 }
@@ -183,11 +190,12 @@ function Mentions() {
     <Prose>
       <h2>Éditeur</h2>
       <p>
-        〔Raison sociale / forme juridique〕, 〔adresse du siège〕, 〔SIREN/SIRET si applicable〕.
-        Directeur de la publication : 〔nom〕. Contact : 〔email〕.
+        ZEWJOUNA — projet en cours de structuration juridique. Les informations d'immatriculation
+        (raison sociale, forme juridique, siège, SIREN/SIRET, directeur de la publication) seront
+        ajoutées avant l'ouverture publique. Contact : {CONTACT_EMAIL}.
       </p>
       <h2>Hébergement</h2>
-      <p>Backend et base de données : Supabase. Hébergement du frontend : 〔fournisseur〕.</p>
+      <p>Backend et base de données : Supabase. Hébergement du frontend : Lovable.</p>
       <h2>Propriété intellectuelle</h2>
       <p>
         La marque, le logo et le contenu de ZEWJOUNA sont protégés. Les contenus publiés par les
@@ -195,7 +203,7 @@ function Mentions() {
         limitée au fonctionnement du service.
       </p>
       <h2>Contact</h2>
-      <p>Pour toute question : 〔email de contact〕.</p>
+      <p>Pour toute question : {CONTACT_EMAIL}.</p>
     </Prose>
   );
 }
