@@ -266,8 +266,8 @@ function Empty({ onReload }: { onReload: () => void }) {
         <Flame className="h-10 w-10 text-muted-foreground" />
       </div>
       <h2 className="mt-5 text-lg font-bold">Plus de profils pour l'instant</h2>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Revenez bientôt — de nouvelles personnes rejoignent ZEWJOUNA chaque jour.
+      <p className="mt-1 whitespace-pre-line text-sm text-muted-foreground">
+        {"Revenez bientôt —\nde nouvelles personnes rejoignent ZEWJOUNA chaque jour.\n"}
       </p>
       <Button className="mt-5 rounded-full" onClick={onReload}>
         <RefreshCw className="h-4 w-4" /> Actualiser
