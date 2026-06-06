@@ -48,10 +48,14 @@ function Chat() {
       try {
         const { data } = await supabase.rpc("get_match_profile", { p_target: otherId });
         setOther(((data as MatchProfileRow[]) ?? [])[0] ?? null);
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
       try {
         setPhoto((await getSignedPhotoUrls(otherId))[0] ?? null);
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
     }
     const { data: msgs } = await supabase
       .from("messages")
@@ -95,7 +99,10 @@ function Chat() {
       supabase
         .from("messages")
         .update({ read_at: new Date().toISOString() })
-        .in("id", unread.map((m) => m.id))
+        .in(
+          "id",
+          unread.map((m) => m.id),
+        )
         .then(() => undefined);
     }
   }, [messages, user]);
@@ -140,7 +147,14 @@ function Chat() {
           <p className="truncate font-bold leading-tight">{other?.display_name ?? "Profil"}</p>
           {expired && <p className="text-xs text-destructive">Match expiré</p>}
         </div>
-        {other && <SafetyMenu targetId={other.user_id} onBlocked={() => navigate({ to: "/messages" })} />}
+        {other && (
+          <SafetyMenu
+            targetId={other.user_id}
+            matchId={matchId}
+            onBlocked={() => navigate({ to: "/messages" })}
+            onUnmatched={() => navigate({ to: "/messages" })}
+          />
+        )}
       </header>
 
       {loading ? (
@@ -184,7 +198,10 @@ function Chat() {
           En attente qu'elle lance la conversation.
         </div>
       ) : (
-        <form onSubmit={send} className="flex items-center gap-2 border-t border-border bg-card px-3 py-3">
+        <form
+          onSubmit={send}
+          className="flex items-center gap-2 border-t border-border bg-card px-3 py-3"
+        >
           <Input
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -192,7 +209,12 @@ function Chat() {
             maxLength={1000}
             className="rounded-full"
           />
-          <Button type="submit" size="icon" className="shrink-0 rounded-full" disabled={!text.trim() || sending}>
+          <Button
+            type="submit"
+            size="icon"
+            className="shrink-0 rounded-full"
+            disabled={!text.trim() || sending}
+          >
             {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
           </Button>
         </form>
