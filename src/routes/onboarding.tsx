@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { TagSelector } from "@/components/tag-selector";
+import { MultiSelect } from "@/components/multi-select";
 import { Splash } from "@/routes/index";
 import {
   ArrowLeft,
@@ -389,7 +390,12 @@ function Onboarding() {
               </div>
               <div>
                 <Label className="mb-2.5 block font-semibold">Langues</Label>
-                <TagSelector options={LANGUAGES} selected={languages} onChange={setLanguages} />
+                <MultiSelect
+                  options={LANGUAGES}
+                  selected={languages}
+                  onChange={setLanguages}
+                  placeholder="Choisir vos langues"
+                />
               </div>
               <div>
                 <Label className="mb-2.5 block font-semibold">Centres d'intérêt</Label>
