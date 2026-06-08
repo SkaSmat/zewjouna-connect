@@ -50,9 +50,8 @@ Le contrat TypeScript correspondant est dans `src/lib/database.types.ts`.
 
 1. **Match** : un like réciproque déclenche le trigger `handle_swipe` qui crée
    le `match` avec une fenêtre de 24 h (`expires_at`).
-2. **Messagerie** : les deux membres d'un match peuvent envoyer le premier
-   message (`can_send_message` vérifie blocage/ban/expiration, sans règle de
-   genre). Le premier message (de l'un ou l'autre) lève l'expiration 24 h.
+2. **Bumble** : dans un couple hétéro, seule la femme peut envoyer le premier
+   message (`can_send_message`). Le premier message lève l'expiration.
 3. **Découverte** : filtres durs (genre réciproque, âge, distance PostGIS,
    exclusion des déjà-swipés et des bloqués) ; rayon élargi adaptativement pour
    le cold-start ; classement par tags communs → proximité → activité récente.

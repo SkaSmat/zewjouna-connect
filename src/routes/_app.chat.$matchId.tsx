@@ -8,7 +8,7 @@ import { notify } from "@/lib/notify";
 import { SafetyMenu } from "@/components/safety-menu";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Loader2, Send, Clock } from "lucide-react";
+import { ArrowLeft, Loader2, Send, Clock, Lock } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/chat/$matchId")({
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/_app/chat/$matchId")({
 
 function Chat() {
   const { matchId } = useParams({ from: "/_app/chat/$matchId" });
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const navigate = useNavigate();
   const [match, setMatch] = useState<MatchRow | null>(null);
   const [other, setOther] = useState<MatchProfileRow | null>(null);
@@ -29,6 +29,14 @@ function Chat() {
   const endRef = useRef<HTMLDivElement>(null);
 
   const expired = !!match?.expires_at && new Date(match.expires_at).getTime() < Date.now();
+  // Bumble rule: in a hetero pair with no messages yet, only the woman may start.
+  const heteroPair =
+    !!profile?.gender &&
+    !!other?.gender &&
+    ((profile.gender === "male" && other.gender === "female") ||
+      (profile.gender === "female" && other.gender === "male"));
+  const noMessages = messages.length === 0;
+  const waitingForHer = heteroPair && noMessages && profile?.gender === "male";
 
   const load = useCallback(async () => {
     if (!user) return;
@@ -117,7 +125,12 @@ function Chat() {
       setText("");
       notify("message", matchId);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Message non envoyé");
+      const msg = err instanceof Error ? err.message : "Message non envoyé";
+      toast.error(
+        heteroPair && profile?.gender === "male"
+          ? "Sur ZEWJOUNA, c'est à elle de lancer la conversation."
+          : msg,
+      );
     } finally {
       setSending(false);
     }
@@ -152,7 +165,7 @@ function Chat() {
         </div>
       ) : (
         <div className="flex-1 space-y-2 overflow-y-auto px-4 py-4">
-          {messages.length === 0 && (
+          {messages.length === 0 && !waitingForHer && (
             <p className="mt-6 text-center text-sm text-muted-foreground">
               Lancez la conversation 🌿
             </p>
@@ -180,6 +193,11 @@ function Chat() {
       {expired ? (
         <div className="flex items-center justify-center gap-2 border-t border-border bg-card px-4 py-4 text-sm text-muted-foreground">
           <Clock className="h-4 w-4" /> Ce match a expiré.
+        </div>
+      ) : waitingForHer ? (
+        <div className="flex items-center justify-center gap-2 border-t border-border bg-card px-4 py-4 text-center text-sm text-muted-foreground">
+          <Lock className="h-4 w-4 shrink-0" />
+          En attente qu'elle lance la conversation.
         </div>
       ) : (
         <form
