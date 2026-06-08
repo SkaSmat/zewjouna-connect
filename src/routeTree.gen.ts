@@ -15,11 +15,11 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppSettingsRouteImport } from './routes/_app.settings'
-import { Route as AppAdminRouteImport } from './routes/_app.admin'
 import { Route as AppProfileRouteImport } from './routes/_app.profile'
 import { Route as AppMessagesRouteImport } from './routes/_app.messages'
 import { Route as AppMatchesRouteImport } from './routes/_app.matches'
 import { Route as AppDiscoverRouteImport } from './routes/_app.discover'
+import { Route as AppAdminRouteImport } from './routes/_app.admin'
 import { Route as AppChatMatchIdRouteImport } from './routes/_app.chat.$matchId'
 
 const OnboardingRoute = OnboardingRouteImport.update({
@@ -51,11 +51,6 @@ const AppSettingsRoute = AppSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AppRoute,
 } as any)
-const AppAdminRoute = AppAdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => AppRoute,
-} as any)
 const AppProfileRoute = AppProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -76,6 +71,11 @@ const AppDiscoverRoute = AppDiscoverRouteImport.update({
   path: '/discover',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAdminRoute = AppAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppChatMatchIdRoute = AppChatMatchIdRouteImport.update({
   id: '/chat/$matchId',
   path: '/chat/$matchId',
@@ -87,12 +87,12 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/legal': typeof LegalRoute
   '/onboarding': typeof OnboardingRoute
+  '/admin': typeof AppAdminRoute
   '/discover': typeof AppDiscoverRoute
   '/matches': typeof AppMatchesRoute
   '/messages': typeof AppMessagesRoute
   '/profile': typeof AppProfileRoute
   '/settings': typeof AppSettingsRoute
-  '/admin': typeof AppAdminRoute
   '/chat/$matchId': typeof AppChatMatchIdRoute
 }
 export interface FileRoutesByTo {
@@ -100,12 +100,12 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/legal': typeof LegalRoute
   '/onboarding': typeof OnboardingRoute
+  '/admin': typeof AppAdminRoute
   '/discover': typeof AppDiscoverRoute
   '/matches': typeof AppMatchesRoute
   '/messages': typeof AppMessagesRoute
   '/profile': typeof AppProfileRoute
   '/settings': typeof AppSettingsRoute
-  '/admin': typeof AppAdminRoute
   '/chat/$matchId': typeof AppChatMatchIdRoute
 }
 export interface FileRoutesById {
@@ -115,12 +115,12 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/legal': typeof LegalRoute
   '/onboarding': typeof OnboardingRoute
+  '/_app/admin': typeof AppAdminRoute
   '/_app/discover': typeof AppDiscoverRoute
   '/_app/matches': typeof AppMatchesRoute
   '/_app/messages': typeof AppMessagesRoute
   '/_app/profile': typeof AppProfileRoute
   '/_app/settings': typeof AppSettingsRoute
-  '/_app/admin': typeof AppAdminRoute
   '/_app/chat/$matchId': typeof AppChatMatchIdRoute
 }
 export interface FileRouteTypes {
@@ -130,12 +130,12 @@ export interface FileRouteTypes {
     | '/auth'
     | '/legal'
     | '/onboarding'
+    | '/admin'
     | '/discover'
     | '/matches'
     | '/messages'
     | '/profile'
     | '/settings'
-    | '/admin'
     | '/chat/$matchId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -143,12 +143,12 @@ export interface FileRouteTypes {
     | '/auth'
     | '/legal'
     | '/onboarding'
+    | '/admin'
     | '/discover'
     | '/matches'
     | '/messages'
     | '/profile'
     | '/settings'
-    | '/admin'
     | '/chat/$matchId'
   id:
     | '__root__'
@@ -157,12 +157,12 @@ export interface FileRouteTypes {
     | '/auth'
     | '/legal'
     | '/onboarding'
+    | '/_app/admin'
     | '/_app/discover'
     | '/_app/matches'
     | '/_app/messages'
     | '/_app/profile'
     | '/_app/settings'
-    | '/_app/admin'
     | '/_app/chat/$matchId'
   fileRoutesById: FileRoutesById
 }
@@ -183,18 +183,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/legal': {
       id: '/legal'
       path: '/legal'
       fullPath: '/legal'
       preLoaderRoute: typeof LegalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app': {
@@ -211,13 +211,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app/profile': {
-      id: '/_app/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof AppProfileRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/_app/settings': {
       id: '/_app/settings'
       path: '/settings'
@@ -225,11 +218,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSettingsRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/admin': {
-      id: '/_app/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AppAdminRouteImport
+    '/_app/profile': {
+      id: '/_app/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AppProfileRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/messages': {
@@ -253,6 +246,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDiscoverRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/admin': {
+      id: '/_app/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AppAdminRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/chat/$matchId': {
       id: '/_app/chat/$matchId'
       path: '/chat/$matchId'
@@ -264,22 +264,22 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteChildren {
+  AppAdminRoute: typeof AppAdminRoute
   AppDiscoverRoute: typeof AppDiscoverRoute
   AppMatchesRoute: typeof AppMatchesRoute
   AppMessagesRoute: typeof AppMessagesRoute
   AppProfileRoute: typeof AppProfileRoute
   AppSettingsRoute: typeof AppSettingsRoute
-  AppAdminRoute: typeof AppAdminRoute
   AppChatMatchIdRoute: typeof AppChatMatchIdRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppAdminRoute: AppAdminRoute,
   AppDiscoverRoute: AppDiscoverRoute,
   AppMatchesRoute: AppMatchesRoute,
   AppMessagesRoute: AppMessagesRoute,
   AppProfileRoute: AppProfileRoute,
   AppSettingsRoute: AppSettingsRoute,
-  AppAdminRoute: AppAdminRoute,
   AppChatMatchIdRoute: AppChatMatchIdRoute,
 }
 
@@ -295,3 +295,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
