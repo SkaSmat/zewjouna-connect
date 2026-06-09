@@ -86,6 +86,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "ZEWJOUNA, l'app de rencontre dédiée à la diaspora algérienne. Trouvez quelqu'un qui partage vos origines, votre langue et vos valeurs.",
       },
       { name: "author", content: "ZEWJOUNA" },
+      { name: "theme-color", content: "#2E7D5B" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
+      { name: "apple-mobile-web-app-title", content: "ZEWJOUNA" },
       { property: "og:title", content: "ZEWJOUNA — Rencontres de la diaspora algérienne" },
       {
         property: "og:description",
@@ -96,6 +100,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "icon", href: "/icon-192.png", type: "image/png" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -126,6 +133,13 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  // Register the PWA service worker (installable + push-ready).
+  useEffect(() => {
+    if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js").catch(() => undefined);
+    }
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
