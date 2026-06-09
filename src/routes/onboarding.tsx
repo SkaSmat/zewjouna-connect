@@ -16,7 +16,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { TagSelector } from "@/components/tag-selector";
 import { MultiSelect } from "@/components/multi-select";
 import { Splash } from "@/routes/index";
 import {
@@ -376,7 +375,12 @@ function Onboarding() {
             <div className="space-y-6">
               <div>
                 <Label className="mb-2.5 block font-semibold">Région d'origine</Label>
-                <TagSelector options={REGIONS} selected={regions} onChange={setRegions} />
+                <MultiSelect
+                  options={REGIONS}
+                  selected={regions}
+                  onChange={setRegions}
+                  placeholder="Choisir vos régions"
+                />
               </div>
               <div>
                 <Label className="mb-2.5 block font-semibold">Ville actuelle</Label>
@@ -399,11 +403,12 @@ function Onboarding() {
               </div>
               <div>
                 <Label className="mb-2.5 block font-semibold">Centres d'intérêt</Label>
-                <TagSelector
+                <MultiSelect
                   options={INTERESTS}
                   selected={interests}
                   onChange={setInterests}
                   max={8}
+                  placeholder="Choisir vos centres d'intérêt (max 8)"
                 />
               </div>
               <div

@@ -2,6 +2,7 @@ import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useAuth, isProfileComplete } from "@/lib/auth";
 import { BottomNav } from "@/components/bottom-nav";
+import { InstallPrompt } from "@/components/install-prompt";
 import { Splash } from "@/routes/index";
 
 export const Route = createFileRoute("/_app")({
@@ -33,6 +34,7 @@ function AppLayout() {
       <div className="flex flex-1 flex-col">
         <Outlet />
       </div>
+      <InstallPrompt />
       <BottomNav />
     </div>
   );
