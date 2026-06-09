@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { enablePush, disablePush, isPushEnabled, pushSupported } from "@/lib/push";
 import { Button } from "@/components/ui/button";
 import {
   Settings as SettingsIcon,
@@ -9,6 +10,7 @@ import {
   Trash2,
   ShieldOff,
   ShieldAlert,
+  Bell,
   Loader2,
   ArrowLeft,
 } from "lucide-react";
@@ -31,10 +33,38 @@ function SettingsPage() {
   const [deleting, setDeleting] = useState(false);
   const [confirm, setConfirm] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
+  const [pushOn, setPushOn] = useState(false);
+  const [pushBusy, setPushBusy] = useState(false);
 
   useEffect(() => {
     supabase.rpc("current_user_is_admin").then(({ data }) => setIsAdmin(data === true));
   }, [user?.id]);
+
+  useEffect(() => {
+    isPushEnabled()
+      .then(setPushOn)
+      .catch(() => setPushOn(false));
+  }, []);
+
+  const togglePush = async () => {
+    if (!user || pushBusy) return;
+    setPushBusy(true);
+    try {
+      if (pushOn) {
+        await disablePush();
+        setPushOn(false);
+        toast.success("Notifications désactivées.");
+      } else {
+        await enablePush(user.id);
+        setPushOn(true);
+        toast.success("Notifications activées 🔔");
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Action impossible");
+    } finally {
+      setPushBusy(false);
+    }
+  };
 
   const loadBlocks = useCallback(async () => {
     if (!user) return;
@@ -141,6 +171,34 @@ function SettingsPage() {
           >
             <ShieldAlert className="h-4 w-4" /> Espace modération
           </Link>
+        )}
+
+        {/* Push notifications */}
+        {pushSupported() && (
+          <section className="space-y-2">
+            <h2 className="flex items-center gap-2 text-sm font-bold">
+              <Bell className="h-4 w-4 text-primary" /> Notifications
+            </h2>
+            <p className="text-xs text-muted-foreground">
+              Soyez prévenu·e en temps réel de vos matchs et messages, même app fermée.{" "}
+              <span className="text-muted-foreground/80">
+                (Sur iPhone : ajoutez d'abord l'app à l'écran d'accueil.)
+              </span>
+            </p>
+            <Button
+              variant={pushOn ? "secondary" : "outline"}
+              className="w-full rounded-full"
+              onClick={togglePush}
+              disabled={pushBusy}
+            >
+              {pushBusy ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Bell className="h-4 w-4" />
+              )}
+              {pushOn ? "Désactiver les notifications" : "Activer les notifications"}
+            </Button>
+          </section>
         )}
 
         {/* Data export */}
