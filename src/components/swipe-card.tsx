@@ -161,9 +161,7 @@ export function SwipeCard({ candidate, onDecision, isTop }: SwipeCardProps) {
           <div className="flex items-end gap-2">
             <h2 className="text-2xl font-extrabold leading-tight">
               {candidate.display_name}
-              {candidate.age != null && (
-                <span className="font-semibold"> · {candidate.age}</span>
-              )}
+              {candidate.age != null && <span className="font-semibold"> · {candidate.age}</span>}
             </h2>
           </div>
           {candidate.distance_m != null && (
@@ -183,10 +181,7 @@ export function SwipeCard({ candidate, onDecision, isTop }: SwipeCardProps) {
 
 function TagRow({ tags, shared }: { tags: string[] | null; shared: string[] | null }) {
   const sharedSet = new Set(shared ?? []);
-  const ordered = [...(shared ?? []), ...((tags ?? []).filter((t) => !sharedSet.has(t)))].slice(
-    0,
-    6,
-  );
+  const ordered = [...(shared ?? []), ...(tags ?? []).filter((t) => !sharedSet.has(t))].slice(0, 6);
   if (!ordered.length) return null;
   return (
     <div className="mt-3 flex flex-wrap gap-1.5">

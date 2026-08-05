@@ -36,7 +36,11 @@ function AuthPage() {
   }, [user, loading, navigate, next]);
 
   const returnTo = () =>
-    typeof window === "undefined" ? undefined : next ? window.location.origin + next : window.location.origin;
+    typeof window === "undefined"
+      ? undefined
+      : next
+        ? window.location.origin + next
+        : window.location.origin;
 
   const handleEmail = async (e: React.FormEvent) => {
     e.preventDefault();

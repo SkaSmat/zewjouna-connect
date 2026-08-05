@@ -51,11 +51,15 @@ function Matches() {
           try {
             const { data } = await supabase.rpc("get_match_profile", { p_target: otherId });
             prof = ((data as MatchProfileRow[]) ?? [])[0] ?? null;
-          } catch { /* ignore */ }
+          } catch {
+            /* ignore */
+          }
           try {
             const urls = await getSignedPhotoUrls(otherId);
             photo = urls[0] ?? null;
-          } catch { /* ignore */ }
+          } catch {
+            /* ignore */
+          }
           return { match, otherId, profile: prof, photo } as MatchView;
         }),
       );

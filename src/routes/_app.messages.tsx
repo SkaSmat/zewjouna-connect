@@ -40,10 +40,14 @@ function Messages() {
         try {
           const { data } = await supabase.rpc("get_match_profile", { p_target: otherId });
           name = ((data as MatchProfileRow[]) ?? [])[0]?.display_name ?? "Profil";
-        } catch { /* ignore */ }
+        } catch {
+          /* ignore */
+        }
         try {
           photo = (await getSignedPhotoUrls(otherId))[0] ?? null;
-        } catch { /* ignore */ }
+        } catch {
+          /* ignore */
+        }
         const { data: msgs } = await supabase
           .from("messages")
           .select("*")
@@ -93,7 +97,9 @@ function Messages() {
               className="flex w-full items-center gap-3 px-3 py-3 text-left"
             >
               <div className="h-14 w-14 shrink-0 overflow-hidden rounded-full bg-muted">
-                {c.photo ? <img src={c.photo} alt="" className="h-full w-full object-cover" /> : null}
+                {c.photo ? (
+                  <img src={c.photo} alt="" className="h-full w-full object-cover" />
+                ) : null}
               </div>
               <div className="min-w-0 flex-1">
                 <p className="truncate font-semibold">{c.name}</p>
