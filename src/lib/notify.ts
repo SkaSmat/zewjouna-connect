@@ -1,12 +1,10 @@
-import { supabase } from "@/integrations/supabase/client";
-
 /**
- * Fire-and-forget e-mail notification. Triggers the `send-notification` edge
- * function for a new match or message. Failures are swallowed: notifications
- * are best-effort and must never block or break the UI flow.
+ * Match/message notifications (web push + e-mail fallback).
+ *
+ * Not wired yet on the new backend: it needs VAPID keys (web push) and/or a
+ * transactional e-mail provider key. Until those are configured this is a
+ * no-op, so the UI flow is never blocked.
  */
-export function notify(type: "match" | "message", matchId: string): void {
-  supabase.functions
-    .invoke("send-notification", { body: { type, match_id: matchId } })
-    .catch(() => undefined);
+export function notify(_type: "match" | "message", _matchId: string): void {
+  // intentionally empty — see above
 }
