@@ -6,8 +6,13 @@ import type { MatchRow, MatchProfileRow } from "@/lib/database.types";
 import { getSignedPhotoUrls } from "@/lib/photos";
 import { Loader2, Sparkles, Clock } from "lucide-react";
 import { toast } from "sonner";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/_app/matches")({
+  head: pageHead(
+    "Mes matchs — ZEWJOUNA",
+    "Retrouvez vos matchs ZEWJOUNA et lancez la conversation avant la fin des 24 heures.",
+  ),
   component: Matches,
 });
 

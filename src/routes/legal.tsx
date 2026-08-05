@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
+import { pageHead } from "@/lib/seo";
 
 type Doc = "confidentialite" | "cgu" | "mentions";
 
@@ -8,6 +9,10 @@ const CONTACT_EMAIL = "skandersmatii@gmail.com";
 const LAST_UPDATED = "6 juin 2026";
 
 export const Route = createFileRoute("/legal")({
+  head: pageHead(
+    "Mentions légales et confidentialité — ZEWJOUNA",
+    "CGU, politique de confidentialité et mentions légales de ZEWJOUNA, l'app de rencontre de la diaspora algérienne.",
+  ),
   ssr: false,
   validateSearch: (search: Record<string, unknown>): { doc?: Doc } => {
     const doc = search.doc;

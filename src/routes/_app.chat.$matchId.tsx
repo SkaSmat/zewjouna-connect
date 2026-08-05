@@ -10,8 +10,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Loader2, Send, Clock, Lock } from "lucide-react";
 import { toast } from "sonner";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/_app/chat/$matchId")({
+  head: pageHead("Conversation — ZEWJOUNA", "Discutez en temps réel avec votre match ZEWJOUNA."),
   component: Chat,
 });
 

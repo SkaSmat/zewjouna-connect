@@ -5,8 +5,13 @@ import { useAuth } from "@/lib/auth";
 import type { MatchRow, MatchProfileRow, MessageRow } from "@/lib/database.types";
 import { getSignedPhotoUrls } from "@/lib/photos";
 import { Loader2, MessageCircle } from "lucide-react";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/_app/messages")({
+  head: pageHead(
+    "Messages — ZEWJOUNA",
+    "Toutes vos conversations ZEWJOUNA réunies au même endroit.",
+  ),
   component: Messages,
 });
 

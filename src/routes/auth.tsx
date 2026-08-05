@@ -8,8 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, Mail } from "lucide-react";
 import { toast } from "sonner";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/auth")({
+  head: pageHead(
+    "Connexion — ZEWJOUNA",
+    "Connectez-vous ou créez votre compte ZEWJOUNA pour rencontrer la diaspora algérienne près de chez vous.",
+  ),
   ssr: false,
   validateSearch: (s: Record<string, unknown>): { next?: string } =>
     typeof s.next === "string" && s.next.startsWith("/") ? { next: s.next } : {},

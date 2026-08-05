@@ -21,8 +21,13 @@ import {
   Check,
 } from "lucide-react";
 import { toast } from "sonner";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/_app/discover")({
+  head: pageHead(
+    "Découvrir — ZEWJOUNA",
+    "Parcourez les profils de la diaspora algérienne autour de vous et likez ceux qui vous correspondent.",
+  ),
   component: Discover,
 });
 

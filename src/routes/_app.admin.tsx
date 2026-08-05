@@ -6,8 +6,13 @@ import { getSignedPhotoUrls } from "@/lib/photos";
 import { Button } from "@/components/ui/button";
 import { ShieldAlert, Loader2, Ban, Check, X, ImageOff } from "lucide-react";
 import { toast } from "sonner";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/_app/admin")({
+  head: pageHead(
+    "Modération — ZEWJOUNA",
+    "Espace de modération ZEWJOUNA : traitement des signalements et des comptes suspendus.",
+  ),
   component: AdminPage,
 });
 
