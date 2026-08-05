@@ -21,6 +21,7 @@ import { Route as AppMatchesRouteImport } from './routes/_app.matches'
 import { Route as AppDiscoverRouteImport } from './routes/_app.discover'
 import { Route as AppAdminRouteImport } from './routes/_app.admin'
 import { Route as AppChatMatchIdRouteImport } from './routes/_app.chat.$matchId'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
@@ -81,6 +82,11 @@ const AppChatMatchIdRoute = AppChatMatchIdRouteImport.update({
   path: '/chat/$matchId',
   getParentRoute: () => AppRoute,
 } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -93,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/messages': typeof AppMessagesRoute
   '/profile': typeof AppProfileRoute
   '/settings': typeof AppSettingsRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/chat/$matchId': typeof AppChatMatchIdRoute
 }
 export interface FileRoutesByTo {
@@ -106,6 +113,7 @@ export interface FileRoutesByTo {
   '/messages': typeof AppMessagesRoute
   '/profile': typeof AppProfileRoute
   '/settings': typeof AppSettingsRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/chat/$matchId': typeof AppChatMatchIdRoute
 }
 export interface FileRoutesById {
@@ -121,6 +129,7 @@ export interface FileRoutesById {
   '/_app/messages': typeof AppMessagesRoute
   '/_app/profile': typeof AppProfileRoute
   '/_app/settings': typeof AppSettingsRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/_app/chat/$matchId': typeof AppChatMatchIdRoute
 }
 export interface FileRouteTypes {
@@ -136,6 +145,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/profile'
     | '/settings'
+    | '/.lovable/oauth/consent'
     | '/chat/$matchId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -149,6 +159,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/profile'
     | '/settings'
+    | '/.lovable/oauth/consent'
     | '/chat/$matchId'
   id:
     | '__root__'
@@ -163,6 +174,7 @@ export interface FileRouteTypes {
     | '/_app/messages'
     | '/_app/profile'
     | '/_app/settings'
+    | '/.lovable/oauth/consent'
     | '/_app/chat/$matchId'
   fileRoutesById: FileRoutesById
 }
@@ -172,6 +184,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   LegalRoute: typeof LegalRoute
   OnboardingRoute: typeof OnboardingRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -260,6 +273,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppChatMatchIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -291,6 +311,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   LegalRoute: LegalRoute,
   OnboardingRoute: OnboardingRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

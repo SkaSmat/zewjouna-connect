@@ -1,0 +1,165 @@
+{
+  "version": 1,
+  "sdk_version": "0.26.1",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://yahkxceolwolgglllcbt.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "zewjouna-connect-63",
+      "version": "0.1.0",
+      "title": "Zewjouna Connect (63)"
+    },
+    "tools": [
+      {
+        "name": "get_my_profile",
+        "title": "Mon profil",
+        "description": "Récupère le profil ZEWJOUNA de l'utilisateur connecté.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "discover_candidates",
+        "title": "Découvrir des profils",
+        "description": "Retourne le feed de découverte de l'utilisateur connecté (filtrage et classement faits côté backend).",
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "min_age": {
+              "type": "integer",
+              "minimum": 18,
+              "maximum": 99,
+              "default": 18,
+              "description": "Âge minimum."
+            },
+            "max_age": {
+              "type": "integer",
+              "minimum": 18,
+              "maximum": 99,
+              "default": 60,
+              "description": "Âge maximum."
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 30,
+              "default": 10,
+              "description": "Nombre max de profils."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_matches",
+        "title": "Mes matchs",
+        "description": "Liste les matchs de l'utilisateur connecté, avec le profil public de l'autre personne.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "description": "Nombre max de matchs."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_messages",
+        "title": "Messages d'une conversation",
+        "description": "Lit les messages d'un match donné (l'utilisateur doit être membre du match).",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "match_id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Identifiant du match."
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50,
+              "description": "Nombre max de messages."
+            }
+          },
+          "required": [
+            "match_id"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "send_message",
+        "title": "Envoyer un message",
+        "description": "Envoie un message dans un match. Les règles du backend s'appliquent (match expiré, règle Bumble du premier message, blocage).",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "match_id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Identifiant du match."
+            },
+            "content": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Contenu du message."
+            }
+          },
+          "required": [
+            "match_id",
+            "content"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
