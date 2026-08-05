@@ -1,9 +1,9 @@
 import { supabase } from "@/integrations/supabase/client";
 
-// VAPID public key (safe to expose). The matching private key lives only in the
-// send-notification edge function secret VAPID_PRIVATE_KEY.
+// VAPID public key (safe to expose). The matching private key is stored as the
+// server secret VAPID_PRIVATE_KEY and only used by src/lib/notify.functions.ts.
 const VAPID_PUBLIC_KEY =
-  "BHdVTCeldh1gFaQnP35t6SUqCCfvYOe-RT7qPlH1oHYdbjOUUGF26hI-SJT6zmWtY8_vsksR6r8mCy3haGmPRSs";
+  "BJX9whm7b7auxOMGdxFMBSNQCgbq17HzCnYvTJnhTHcsXOa2CPF7NDjwpqcTXcVHRknWEQEYJ3y6jPXByg4hvOI";
 
 export function pushSupported(): boolean {
   return (
