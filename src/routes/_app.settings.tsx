@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { enablePush, disablePush, isPushEnabled, pushSupported } from "@/lib/push";
+import { deleteMyAccount } from "@/lib/account.functions";
 import { Button } from "@/components/ui/button";
 import {
   Settings as SettingsIcon,
