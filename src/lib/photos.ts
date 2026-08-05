@@ -1,24 +1,18 @@
 import { supabase } from "@/integrations/supabase/client";
 import { PHOTO_BUCKET } from "@/lib/constants";
+import { signedPhotoUrls } from "@/lib/account.functions";
 
 /**
  * Get signed URLs for ANOTHER user's photos.
  * This is the ONLY permitted way to display other people's photos.
  *
- * Degrades gracefully: if the edge function is unavailable (e.g. not deployed
- * → 404) or any other error occurs, we return an empty list so the UI can show
+ * Degrades gracefully: on any error we return an empty list so the UI can show
  * a "no photo" placeholder instead of crashing the discovery feed.
  */
 export async function getSignedPhotoUrls(targetId: string): Promise<string[]> {
   try {
-    const { data, error } = await supabase.functions.invoke("signed-photo-urls", {
-      body: { target_id: targetId },
-    });
-    if (error) {
-      console.warn("[photos] signed-photo-urls unavailable:", error.message ?? error);
-      return [];
-    }
-    return (data?.urls as string[]) ?? [];
+    const data = await signedPhotoUrls({ data: { targetId } });
+    return data?.urls ?? [];
   } catch (err) {
     console.warn("[photos] failed to fetch signed photo URLs:", err);
     return [];

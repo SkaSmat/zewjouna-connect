@@ -87,7 +87,7 @@ function ProfilePage() {
         .update({
           display_name: displayName.trim(),
           bio: bio.trim() || null,
-          looking_for: lookingFor,
+          looking_for: lookingFor as "everyone" | "female" | "male" | "nonbinary",
           community_tags: tags,
           photos: photoPaths,
         })
