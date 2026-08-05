@@ -137,8 +137,7 @@ function SettingsPage() {
     if (!user || deleting) return;
     setDeleting(true);
     try {
-      const { error } = await supabase.functions.invoke("delete-account", { body: {} });
-      if (error) throw error;
+      await deleteMyAccount({ data: undefined });
       toast.success("Votre compte a été supprimé.");
       await signOut();
       navigate({ to: "/auth", replace: true });
