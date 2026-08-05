@@ -22,9 +22,7 @@ export async function getSignedPhotoUrls(targetId: string): Promise<string[]> {
 /** Sign my OWN stored photo paths (RLS allows reading my own folder). */
 export async function getOwnSignedUrls(paths: string[]): Promise<string[]> {
   if (!paths.length) return [];
-  const { data, error } = await supabase.storage
-    .from(PHOTO_BUCKET)
-    .createSignedUrls(paths, 600);
+  const { data, error } = await supabase.storage.from(PHOTO_BUCKET).createSignedUrls(paths, 600);
   if (error) throw error;
   return (data ?? []).map((d) => d.signedUrl).filter((u): u is string => !!u);
 }

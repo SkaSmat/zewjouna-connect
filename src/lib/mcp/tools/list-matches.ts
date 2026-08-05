@@ -5,8 +5,11 @@ import { supabaseForUser } from "../supabase";
 export default defineTool({
   name: "list_matches",
   title: "Mes matchs",
-  description: "Liste les matchs de l'utilisateur connecté, avec le profil public de l'autre personne.",
-  inputSchema: { limit: z.number().int().min(1).max(50).default(20).describe("Nombre max de matchs.") },
+  description:
+    "Liste les matchs de l'utilisateur connecté, avec le profil public de l'autre personne.",
+  inputSchema: {
+    limit: z.number().int().min(1).max(50).default(20).describe("Nombre max de matchs."),
+  },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: async ({ limit }, ctx) => {
     if (!ctx.isAuthenticated()) {

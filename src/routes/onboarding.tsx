@@ -30,8 +30,13 @@ import {
   X,
 } from "lucide-react";
 import { toast } from "sonner";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/onboarding")({
+  head: pageHead(
+    "Créer mon profil — ZEWJOUNA",
+    "Complétez votre profil ZEWJOUNA : photos, bio, préférences et attaches communautaires pour des rencontres qui vous ressemblent.",
+  ),
   ssr: false,
   component: Onboarding,
 });

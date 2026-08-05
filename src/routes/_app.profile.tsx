@@ -18,8 +18,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { User, LogOut, Loader2, Plus, X, BadgeCheck, Settings } from "lucide-react";
 import { toast } from "sonner";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/_app/profile")({
+  head: pageHead(
+    "Mon profil — ZEWJOUNA",
+    "Modifiez vos photos, votre bio et vos attaches communautaires sur ZEWJOUNA.",
+  ),
   component: ProfilePage,
 });
 

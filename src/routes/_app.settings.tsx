@@ -16,8 +16,13 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { toast } from "sonner";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/_app/settings")({
+  head: pageHead(
+    "Réglages — ZEWJOUNA",
+    "Gérez vos préférences, vos comptes bloqués, vos notifications et votre compte ZEWJOUNA.",
+  ),
   component: SettingsPage,
 });
 

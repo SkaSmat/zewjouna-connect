@@ -2,8 +2,13 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useAuth, isProfileComplete } from "@/lib/auth";
 import { Heart } from "lucide-react";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
+  head: pageHead(
+    "ZEWJOUNA — Rencontres de la diaspora algérienne",
+    "Rejoignez ZEWJOUNA : l'app de rencontre sérieuse de la diaspora algérienne, avec matching communautaire par région, langue et centres d'intérêt.",
+  ),
   ssr: false,
   component: Index,
 });
