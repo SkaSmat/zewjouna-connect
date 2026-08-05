@@ -39,9 +39,9 @@ export async function enablePush(userId: string): Promise<boolean> {
   const { error } = await supabase.from("push_subscriptions").upsert(
     {
       user_id: userId,
-      endpoint: json.endpoint,
-      p256dh: json.keys?.p256dh,
-      auth: json.keys?.auth,
+      endpoint: json.endpoint ?? "",
+      p256dh: json.keys?.p256dh ?? "",
+      auth: json.keys?.auth ?? "",
     },
     { onConflict: "endpoint" },
   );
