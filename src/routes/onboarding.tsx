@@ -153,17 +153,17 @@ function Onboarding() {
       const community_tags = Array.from(
         new Set([...regions, ...languages, ...interests, ...(city.trim() ? [city.trim()] : [])]),
       );
-      const payload: Record<string, unknown> = {
+      const payload = {
         user_id: user.id,
         display_name: displayName.trim(),
         birthdate,
-        gender,
-        looking_for: lookingFor,
+        gender: gender as "female" | "male" | "nonbinary",
+        looking_for: lookingFor as "everyone" | "female" | "male" | "nonbinary",
         bio: bio.trim() || null,
         photos: photoPaths,
         community_tags,
+        ...(coords ? { location: toWkt(coords.lng, coords.lat) } : {}),
       };
-      if (coords) payload.location = toWkt(coords.lng, coords.lat);
 
       const { error } = await supabase.from("profiles").upsert(payload, { onConflict: "user_id" });
       if (error) throw error;
