@@ -10,12 +10,16 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
+  validateSearch: (s: Record<string, unknown>) => ({
+    next: typeof s.next === "string" && s.next.startsWith("/") ? s.next : undefined,
+  }),
   component: AuthPage,
 });
 
 function AuthPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const { next } = Route.useSearch();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,8 +27,16 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (!loading && user) navigate({ to: "/", replace: true });
-  }, [user, loading, navigate]);
+    if (loading || !user) return;
+    if (next) {
+      window.location.replace(next);
+      return;
+    }
+    navigate({ to: "/", replace: true });
+  }, [user, loading, navigate, next]);
+
+  const returnTo = () =>
+    typeof window === "undefined" ? undefined : next ? window.location.origin + next : window.location.origin;
 
   const handleEmail = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +50,7 @@ function AuthPage() {
         const { error } = await supabase.auth.signUp({
           email,
           password,
-          options: { emailRedirectTo: window.location.origin },
+          options: { emailRedirectTo: returnTo() },
         });
         if (error) throw error;
         toast.success("Compte créé ! Vérifiez vos e-mails si une confirmation est requise.");
@@ -62,7 +74,7 @@ function AuthPage() {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: { redirectTo: window.location.origin },
+        options: { redirectTo: returnTo() },
       });
       if (error) throw error;
     } catch (err) {
